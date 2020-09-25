@@ -41,7 +41,7 @@
 		},
 		{
 			"type": "shell",
-			"label": "pre-debug",
+			"label": "deploy",
 			"isBackground": true,
 			"command": "/bin/bash",
 			"args": ["-c", "sudo ./debug.sh"],
