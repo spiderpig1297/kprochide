@@ -1,5 +1,7 @@
 #include "readpid.h"
 
+#include <linux/delay.h>
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("spiderpig");
 MODULE_VERSION("1.0.0");

@@ -3,7 +3,6 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
-#include <linux/fs.h>
 #include <linux/types.h>
 
 struct pid_info {
@@ -11,7 +10,7 @@ struct pid_info {
     struct list_head _pid_list_head;
 };
 
-static struct pid_info* pid_list;
+static LIST_HEAD(pid_list);
 
 // register and unregister the char device.
 int register_readpid_chrdev(const char* device_name);
