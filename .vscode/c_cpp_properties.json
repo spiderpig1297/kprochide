@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/iofek/workspace/buildroot/output/build/linux-4.19.98/include",
+                "/home/iofek/workspace/buildroot/output/build/linux-4.19.98/include/uapi",
+                "/home/iofek/workspace/buildroot/output/build/linux-4.19.98/include/generated/uapi",
+                "/home/iofek/workspace/buildroot/output/build/linux-headers-4.19.107/arch/x86/include",
+                "/home/iofek/workspace/buildroot/output/build/linux-headers-4.19.107/arch/x86/include/generated",
+                "/home/iofek/workspace/buildroot/output/build/linux-headers-4.19.107/arch/x86/include/uapi",
+                "/home/iofek/workspace/buildroot/output/build/linux-headers-4.19.107/arch/x86/include/generated/uapi",
+                "/usr/lib/gcc/x86_64-linux-gnu/5/include"
+            ],
+            "compilerArgs": [
+                "-nostdinc",
+                "-include", "/home/iofek/workspace/buildroot/output/build/linux-4.19.98/include/linux/kconfig.h",
+                "-include", "/home/iofek/workspace/buildroot/output/build/linux-4.19.98/include/linux/compiler_types.h"
+            ],
+            "defines": [
+                "__KERNEL__",
+                "MODULE"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}
