@@ -17,6 +17,7 @@ static int __init mod_init(void)
     }
 
     printk(KERN_INFO "kprochide: registered char device (%d)\n", readpid_chrdev_major_num);
+    printk(KERN_INFO "kprochide: please run 'mknod /dev/readpid c %d 0'\n", readpid_chrdev_major_num);
 
     return 0;
 }
