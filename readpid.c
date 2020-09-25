@@ -22,7 +22,6 @@ int register_readpid_chrdev(const char* device_name)
 void unregister_readpid_chrdev(int major_num, const char* device_name) 
 {
     unregister_chrdev(major_num, device_name);
-    printk("kprochide: unregistered char device %d\n", major_num);
 }
 
 static int device_open(struct inode* inode, struct file* file)
