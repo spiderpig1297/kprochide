@@ -11,7 +11,7 @@ static int __init mod_init(void)
 {
     printk(KERN_INFO "kprochide: loaded\n");
     readpid_chrdev_major_num = register_readpid_chrdev(readpid_chrdev_name);
-    if (readpid_chrdev_major_num) {
+    if (readpid_chrdev_major_num < 0) {
         printk(KERN_ERR "kprochide: failed to register char device (%d)\n", readpid_chrdev_major_num);
         return -EBUSY;
     }
