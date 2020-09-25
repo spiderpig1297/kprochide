@@ -33,6 +33,7 @@ echo "[+] VM: initialized"
 echo "[+] moving kernel module $KERNEL_MODULE_NAME to the vm"
 sshpass -p "$VM_PASSWORD" ssh -p $SSH_PORT $VM_USERNAME@localhost "rm -rf $REMOTE_DIR"
 sshpass -p "$VM_PASSWORD" scp -P $SSH_PORT -r $CWD $VM_USERNAME@localhost:$REMOTE_DIR
+sshpass -p "$VM_PASSWORD" ssh -p $SSH_PORT $VM_USERNAME@localhost "rmmod $REMOTE_DIR/$KERNEL_MODULE_NAME.ko"
 sshpass -p "$VM_PASSWORD" ssh -p $SSH_PORT $VM_USERNAME@localhost "insmod $REMOTE_DIR/$KERNEL_MODULE_NAME.ko"
 
 rm -f ~/.gdbinit
