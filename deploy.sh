@@ -43,3 +43,5 @@ text_address=`sshpass -p "$VM_PASSWORD" ssh -p $SSH_PORT $VM_USERNAME@localhost 
 
 echo "add-symbol-file $KERNEL_MODULE_NAME.ko $text_address" > ~/.gdbinit
 echo "file ./$KERNEL_MODULE_NAME.ko" >> ~/.gdbinit
+
+gnome-terminal --working-directory=$CWD -e "sshpass -p "$VM_PASSWORD" ssh -p $SSH_PORT $VM_USERNAME@localhost"
