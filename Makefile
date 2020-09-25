@@ -1,5 +1,5 @@
 obj-m += kprochide.o
-kprochide-y := source.o readpid.o
+kprochide-y := source.o hidepid.o
 
 KERNELDIR ?= ~/workspace/buildroot/output/build/linux-4.19.98
 PWD       := $(shell pwd)

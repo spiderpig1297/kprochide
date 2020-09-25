@@ -1,4 +1,4 @@
-#include "readpid.h"
+#include "hidepid.h"
 
 #include <linux/fs.h>
 #include <linux/slab.h>
@@ -19,12 +19,12 @@ static struct file_operations _file_ops = {
     .release = device_release
 };
 
-int register_readpid_chrdev(const char* device_name)
+int register_hidepid_chrdev(const char* device_name)
 {
     return register_chrdev(0, device_name, &_file_ops);
 }
 
-void unregister_readpid_chrdev(int major_num, const char* device_name) 
+void unregister_hidepid_chrdev(int major_num, const char* device_name) 
 {
     unregister_chrdev(major_num, device_name);
 }
@@ -48,26 +48,7 @@ static int device_release(struct inode* inode, struct file* file)
 }
 
 static ssize_t device_read(struct file *fs, char *buffer, size_t len, loff_t *offset)
-{
-    struct list_head *pos = NULL;
-    struct list_head *tmp;
-    struct pid_info *info = NULL;
-
-    list_for_each_safe(pos, tmp, &pid_list) {
-        info = NULL;
-
-        printk(KERN_INFO "kprochide: in for each\n");
-
-        info = list_entry(pos, struct pid_info, _pid_list_head);
-        if (NULL == info) {
-            continue;
-        }
-
-        printk(KERN_INFO "info->pid_number=%d\n", info->pid_number);
-        list_del(pos);
-        kfree(info);
-    }
-
+{ 
     return len;
 }
 
@@ -83,12 +64,7 @@ static ssize_t device_write(struct file *fs, const char*buffer, size_t len, loff
     pid_t pid = (pid_t)pid_as_int;
     printk(KERN_INFO "kprochide: received pid %d\n", pid);
 
-    // add a new pid_info* to the linked-list.
-    struct pid_info* info = (struct pid_info*)kmalloc(sizeof(struct pid_info), GFP_KERNEL);
-    info->pid_number = pid;
-
-    printk(KERN_INFO "kprochide: adding pid %d to list\n", pid);
-    list_add_tail(&info->_pid_list_head, &pid_list);
+    // hide process
 
     return len;
 }
