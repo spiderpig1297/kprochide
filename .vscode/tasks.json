@@ -97,6 +97,20 @@
 				"cwd": "${workspaceFolder}"
 			},
 			"problemMatcher": []
+		},
+		{
+			"type": "shell",
+			"label": "kill QEMU",
+			"isBackground": true,
+			"command": "/bin/bash",
+			"args": [
+				"-c",
+				"gksudo pkill qemu && pkill gdb && pkill deploy.sh",
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": []
 		}
 	]
 }
