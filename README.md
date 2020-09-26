@@ -48,7 +48,7 @@ Whenever our new function is called with the directory that represents the proce
     --------------------      ---------------
             
                 evil_filldir_t() is called. If the process should be hidden, 
-                It returns 0. Otherwise, it calls the original filldir_t() and returns its result. 
+                it returns 0. Otherwise, it calls the original filldir_t() and returns its result. 
 
 The module uses character device in order to __dynamically receive the _PIDs_ to hide.__ Each new PID is saved to a global linked-list.
 
