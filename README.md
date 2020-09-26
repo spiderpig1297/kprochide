@@ -90,3 +90,4 @@ Once the module is unloaded, it restores procfs' original functions, unregistere
 ## __Limitiations__
 
 * Currently there is no support for dynamically removing _PIDs_ to hide.
+* Currently there is no support for listing the processes to hide.
