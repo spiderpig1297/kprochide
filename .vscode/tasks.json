@@ -86,8 +86,9 @@
 			"type": "shell",
 			"label": "debug",
 			"isBackground": true,
-			"command": "gnome-terminal",
+			"command": "/usr/bin/dbus-launch",
 			"args": [
+				"/usr/bin/gnome-terminal",
 				"--working-directory",
 				"${workspaceFolder}",
 				"-e",
