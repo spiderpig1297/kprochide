@@ -3,6 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
+                "/home/iofek/workspace/buildroot/output/build/linux-4.19.98/",
                 "/home/iofek/workspace/buildroot/output/build/linux-4.19.98/include",
                 "/home/iofek/workspace/buildroot/output/build/linux-4.19.98/include/uapi",
                 "/home/iofek/workspace/buildroot/output/build/linux-4.19.98/include/generated/uapi",
