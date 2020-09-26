@@ -40,6 +40,7 @@ sshpass -p "$VM_PASSWORD" ssh -p $SSH_PORT $VM_USERNAME@localhost "rmmod $REMOTE
 echo "[+] loading $KERNEL_MODULE_NAME to the kernel"
 sshpass -p "$VM_PASSWORD" ssh -p $SSH_PORT $VM_USERNAME@localhost "insmod $REMOTE_DIR/$KERNEL_MODULE_NAME.ko"
 
+echo "[+] retrieving $KERNEL_MODULE_NAME .text section"
 rm -f ~/.gdbinit
 text_address=`sshpass -p "$VM_PASSWORD" ssh -p $SSH_PORT $VM_USERNAME@localhost cat /sys/module/$KERNEL_MODULE_NAME/sections/.text`
 # data_address=`sshpass -p "$VM_PASSWORD" ssh -p $SSH_PORT $VM_USERNAME@localhost cat /sys/module/$KERNEL_MODULE_NAME/sections/.data`
@@ -49,5 +50,6 @@ text_address=`sshpass -p "$VM_PASSWORD" ssh -p $SSH_PORT $VM_USERNAME@localhost 
 echo "add-symbol-file $KERNEL_MODULE_NAME.ko $text_address" > ~/.gdbinit
 echo "file ./$KERNEL_MODULE_NAME.ko" >> ~/.gdbinit
 
+echo "[+] launching SSH connection to the VM"
 pkill gnome-terminal
 gnome-terminal --working-directory=$CWD -e "sshpass -p "$VM_PASSWORD" ssh -p $SSH_PORT $VM_USERNAME@localhost"
