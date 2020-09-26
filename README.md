@@ -1,11 +1,11 @@
 # __kprochide__
 
-_kprochide_ is an LKM (loadable kernel module) for hiding processes from the userland. The module is able to hide multiple processes and is able to dynamically receive new processes to hide.
+`kprochide` is an LKM (loadable kernel module) for hiding processes from the userland. The module is able to hide multiple processes and is able to dynamically receive new processes to hide.
 
-**NOTE:** the module was built and tested for linux version 4.19.98.
+**NOTE:** the module was built and tested for linux version `4.19.98`.
 
 ## __How It Works__
-_kprochide_'s MO is to replace the function that is responsible for iterating the _procfs_'s directories. 
+`kprochide`'s MO is to replace the function that is responsible for iterating the `procfs`'s directories. 
 
 Lets take a detailed look at the process of finding all running processes:
 
@@ -34,7 +34,7 @@ Lets take a detailed look at the process of finding all running processes:
             
                 filldir_t() is called, responsible for listing the existing directories.
             
-By replacing the _filldir()_ function with our own, we are able to control which directories the user can see.
+By replacing `filldir()` function with our own, we are able to control which directories the user can see.
 Whenever our new function is called with the directory that represents the process we want to hide, the module "lies" to the user-mode telling that the directory doesn't exist.
 
     --------------------
@@ -52,7 +52,7 @@ Whenever our new function is called with the directory that represents the proce
 
 The module uses character device in order to __dynamically receive the _PIDs_ to hide.__ Each new PID is saved to a global linked-list.
 
-Once the module is unloaded, it restores procfs' original functions, unregisteres the character device and empties the linked-list.
+Once the module is unloaded, it restores `procfs`' original functions, unregisteres the character device and empties the linked-list.
 
 ## __Usage__
 
@@ -92,3 +92,4 @@ Once the module is unloaded, it restores procfs' original functions, unregistere
 
 * Currently there is no support for dynamically removing _PIDs_ to hide.
 * Currently there is no support for listing the processes to hide.
+* When restarting the machine, the module will be unloaded and all process will be visible again.
