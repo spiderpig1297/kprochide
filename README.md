@@ -1,6 +1,6 @@
 # __kprochide__
 
-`kprochide` is an LKM (loadable kernel module) for hiding processes from the userland. The module is able to hide multiple processes and is able to dynamically receive new processes to hide.
+`kprochide` is an LKM for hiding processes from the userland. The module is able to hide multiple processes and is able to dynamically receive new processes to hide.
 
 **NOTE:** the module was built and tested for linux version `4.19.98`.
 
