@@ -2,7 +2,7 @@
 trap "" 0 1 2 3 9 13 15
 
 # User configuration
-HOME_DIRECTORY="/home/iofek"
+HOME_DIRECTORY="/home/spiderpig"
 BUILDROOT_IMAGES_PATH="$HOME_DIRECTORY/workspace/buildroot/output/images"
 VM_USERNAME="root"
 VM_PASSWORD="root"
