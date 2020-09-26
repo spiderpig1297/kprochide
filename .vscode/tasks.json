@@ -47,7 +47,6 @@
 		{
 			"type": "shell",
 			"label": "deploy",
-			"isBackground": true,
 			"command": "/bin/bash",
 			"args": [
 				"-c",
