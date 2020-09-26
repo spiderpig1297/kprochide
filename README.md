@@ -70,7 +70,7 @@ Once the module is unloaded, it restores procfs' original functions, unregistere
 
 4. Create an FS node for the module's character device:
 
-    **NOTE:** the module logs its char device major number to the log. run _dmesg_ to see it.
+    **NOTE:** the module logs its char device's major number to the log. run _dmesg_ to see it.
 
         mknod /dev/<name> c <major_from_dmesg> 0
 
