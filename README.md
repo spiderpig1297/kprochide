@@ -1,6 +1,6 @@
 # __kprochide__
 
-_kprochide_ is an LKM (loadable kernel module) for hiding process from the userland. The module is able to hide multiple processes and is able to dynamically receive new processes to hide.
+_kprochide_ is an LKM (loadable kernel module) for hiding processes from the userland. The module is able to hide multiple processes and is able to dynamically receive new processes to hide.
 
 **NOTE:** the module was built and tested for linux version 4.19.98.
 
@@ -35,7 +35,7 @@ Lets take a detailed look at the process of finding all running processes:
                 filldir_t() is called, responsible for listing the existing directories.
             
 By replacing the _filldir()_ function with our own, we are able to control which directories the user can see.
-Whenever our new function is called with the directory that represents the process that we want to hide, the module "lies" to the user-mode telling that this directory doesn't exist.
+Whenever our new function is called with the directory that represents the process we want to hide, the module "lies" to the user-mode telling that the directory doesn't exist.
 
     --------------------
     | iterate_shared() |
@@ -43,11 +43,12 @@ Whenever our new function is called with the directory that represents the proce
             |
             |   iterate_shared() is called, invoking the function filldir_t().
             |
-    ---------------      --------------------
-    | filldir_t() | ---> | evil_filldir_t() | 
-    ---------------      --------------------
+    --------------------      ---------------
+    | evil_filldir_t() | ---> | filldir_t() | 
+    --------------------      ---------------
             
-                ** evil_filldir_t() is called, filtering our the processes we want to hide. ***
+                evil_filldir_t() is called. If the process should be hidden, 
+                it returns 0. Otherwise, it calls the original filldir_t() and returns its result. 
 
 The module uses character device in order to __dynamically receive the _PIDs_ to hide.__ Each new PID is saved to a global linked-list.
 
@@ -69,7 +70,7 @@ Once the module is unloaded, it restores procfs' original functions, unregistere
 
 4. Create an FS node for the module's character device:
 
-    **NOTE:** the module logs its char device major number to the log. run _dmesg_ to see it.
+    **NOTE:** the module logs its char device's major number to the log. run _dmesg_ to see it.
 
         mknod /dev/<name> c <major_from_dmesg> 0
 
