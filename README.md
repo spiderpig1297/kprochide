@@ -2,7 +2,7 @@
 
 _kprochide_ is an LKM (loadable kernel module) for hiding process from the userland. The module is able to hide multiple processes and is able to dynamically receive new processes to hide.
 
-**_NOTE:_** the module was built and tested for linux version 4.19.98.
+**NOTE:** the module was built and tested for linux version 4.19.98.
 
 ## __How It Works__
 _kprochide_'s MO is to replace the function that is responsible for iterating the _procfs_'s directories. 
@@ -69,7 +69,7 @@ Once the module is unloaded, it restores procfs' original functions, unregistere
 
 4. Create an FS node for the module's character device:
 
-    **_NOTE:_** the module logs its char device major number to the log. run _dmesg_ to see it.
+    **NOTE:** the module logs its char device major number to the log. run _dmesg_ to see it.
 
         mknod /dev/<name> c <major_from_dmesg> 0
 
