@@ -3,11 +3,11 @@
 #include <linux/fs.h>
 #include <linux/slab.h>
 
-// mutex for accessing the list of processes to hide
 DEFINE_MUTEX(kprochide_pids_to_hide_mutex);
 
 static int device_open_count = 0;
 
+// file_operation functions for the character device.
 static int device_open(struct inode* inode, struct file* file);
 static int device_release(struct inode* inode, struct file* file);
 static ssize_t device_read(struct file *fs, char *buffer, size_t len, loff_t *offset);
@@ -79,6 +79,5 @@ static int device_release(struct inode* inode, struct file* file)
 
 static ssize_t device_read(struct file *fs, char *buffer, size_t len, loff_t *offset)
 { 
-    // not implemented
     return len;
 }

