@@ -56,37 +56,34 @@ Once the module is unloaded, it restores `procfs`' original functions, unregiste
 
 ## __Usage__
 
-1. Clone into the respository:
+```sh
+$ git clone https://github.com/spiderpig1297/kprochide.git
+$ cd kprochide
+$ make
+$ sudo insmod kprochide.ko
+```
 
-        git clone https://github.com/spiderpig1297/kprochide.git
+Once the module starts, it logs the registered character device major number to the log. run `dmesg` to see it and `mknod` to create a node to the device:
 
-2. Navigate to the source-code directory, and run:
+```sh
+$ dmesg
+$ mknod /dev/readpid c <MAJOR_GOES_HERE> 0
+```
 
-        make
+Write a PID to hide to our newly-created device:
+```sh
+echo <pid> | /dev/readpid
+```
 
-3. Upload the compiled module (_kprochide.ko_) to the target machine (if needed), and run:
-    
-        sudo insmod kprochide.ko
+List running processes:
+```sh
+$ ps aux 
+$ ps aux | grep <PROCESS_NAME>
+$ ls -al /proc
+$ ls -al /proc | grep <PROCESS_NAME>
+```
 
-4. Create an FS node for the module's character device:
-
-    **NOTE:** the module logs its char device's major number to the log. run _dmesg_ to see it.
-
-        mknod /dev/<name> c <major_from_dmesg> 0
-
-5. Write a PID to hide to our newly-created device:
-
-        echo <pid> | /dev/<name>
-
-6. List running processes
-
-        ps aux 
-        ps aux | grep <your_process_name>
-
-        ls -al /proc
-        ls -al /proc | grep <your_process_name>
-
-7. ta-da!
+__ta-da!__
 
 ## __Limitiations__
 
