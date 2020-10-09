@@ -85,7 +85,7 @@ $ ls -al /proc | grep <PROCESS_NAME>
 
 __ta-da!__
 
-## __Limitiations__
+## __Limitations__
 
 * Currently there is no support for dynamically removing _PIDs_ to hide.
 * Currently there is no support for listing the processes to hide.
